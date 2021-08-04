@@ -1,5 +1,6 @@
 package com.letz.note;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -7,6 +8,8 @@ import androidx.room.PrimaryKey;
 public class Note {
     @PrimaryKey(autoGenerate = true)
     public int id;
+
+    @ColumnInfo(name = "description")
     public String description;
 
     public Note(String description) {
@@ -16,7 +19,6 @@ public class Note {
     public int getId() {
         return id;
     }
-
     public String getDescription() {
         return description;
     }
