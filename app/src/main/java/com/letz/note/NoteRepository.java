@@ -56,24 +56,6 @@ public class NoteRepository
         }
     }
 
-    private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void>
-    {
-        private NoteDAO noteDAO;
-
-        private InsertNoteAsyncTask(NoteDAO noteDAO)
-        {
-            this.noteDAO = noteDAO;
-        }
-
-        @Override
-        protected Void doInBackground(Note... notes)
-        {
-            noteDAO.Insert(notes[0]);
-            return null;
-        }
-    }
-
-
     private static class UpdateNoteAsyncTask extends AsyncTask<Note, Void, Void>
     {
         private NoteDAO noteDAO;
@@ -95,7 +77,7 @@ public class NoteRepository
     {
         private NoteDAO noteDAO;
 
-        private  DeleteNoteAsyncTask(NoteDAO noteDAO)
+        private DeleteNoteAsyncTask(NoteDAO noteDAO)
         {
             this.noteDAO = noteDAO;
         }
