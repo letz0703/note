@@ -1,12 +1,17 @@
 package com.letz.note;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -14,9 +19,13 @@ public class MainActivity extends AppCompatActivity {
 
     private NoteViewModel noteViewModel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        
+
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_main);
         //리사이클 뷰 정의
         RecyclerView rv = findViewById(R.id.rv);
@@ -39,5 +48,49 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setNotes(notes);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+//        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.new_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.top_menu:
+                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+//                startActivity(intent);
+                startActivityForResult(intent, 1);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    public void openSomeActivityForResult() {
+        Intent intent = new Intent(this, SomeActivity.class);
+        someActivityResultLauncher.launch(intent);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK)
+        {
+            String memo = data.getStringExtra("note");
+
+            Note note = new Note(memo);
+
+            noteViewModel.insert(note);
+        }
     }
 }
