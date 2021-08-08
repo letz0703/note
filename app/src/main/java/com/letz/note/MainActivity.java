@@ -3,6 +3,8 @@ package com.letz.note;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
@@ -16,6 +18,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //리사이클 뷰 정의
+        RecyclerView rv = findViewById(R.id.rv);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        // new LinearLayoutManager는 data가 top to bottom으로 보이게 한다.
+
+        //NoteAdapter클래스 obj 생성
+        NoteAdapter adapter = new NoteAdapter();
+        //RecyclerView에 노트업답터 부착
+        rv.setAdapter(adapter);
 
         noteViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
                 .create(NoteViewModel.class);
@@ -25,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Note> notes)
             {
                 // Update Recycler View
+                adapter.setNotes(notes);
             }
         });
     }
