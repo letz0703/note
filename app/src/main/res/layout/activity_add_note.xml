@@ -14,7 +14,7 @@
             android:inputType="textMultiLine"
             android:gravity="start|top"
             android:ems="10"
-            android:id="@+id/editTextMemo"
+            android:id="@+id/memo"
             android:hint="enter note" />
 
     <LinearLayout

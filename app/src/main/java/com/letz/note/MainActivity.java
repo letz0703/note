@@ -1,5 +1,9 @@
 package com.letz.note;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,22 +12,23 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private final String TAG = "Test";
     private NoteViewModel noteViewModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
-
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_main);
@@ -49,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    ActivityResultLauncher< Intent > startARLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+
+//                        String description = data.getStringExtra("note");
+//                        Note note = new Note(description);
+                        Note note = new Note(data.getStringExtra("note"));
+                        //Add this data to the DB
+                        noteViewModel.insert(note);
+                    }
+
+                }
+            }
+    );
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -61,36 +84,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
+
         switch (item.getItemId())
         {
             case R.id.top_menu:
-                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
-//                startActivity(intent);
-                startActivityForResult(intent, 1);
+                gotoAddMemo();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-
-
-    public void openSomeActivityForResult() {
-        Intent intent = new Intent(this, SomeActivity.class);
-        someActivityResultLauncher.launch(intent);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK)
-        {
-            String memo = data.getStringExtra("note");
-
-            Note note = new Note(memo);
-
-            noteViewModel.insert(note);
-        }
+    private void gotoAddMemo() {
+        Intent intent = new Intent(this, AddNoteActivity.class);
+//                startActivityForResult(intent, 1);
+                startARLauncher.launch(intent);
+//        startActivity(intent);
     }
 }
