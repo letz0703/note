@@ -54,24 +54,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    ActivityResultLauncher< Intent > startARLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-
-//                        String description = data.getStringExtra("note");
-//                        Note note = new Note(description);
-                        Note note = new Note(data.getStringExtra("note"));
-                        //Add this data to the DB
-                        noteViewModel.insert(note);
-                    }
-
-                }
-            }
-    );
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -102,4 +84,22 @@ public class MainActivity extends AppCompatActivity {
                 startARLauncher.launch(intent);
 //        startActivity(intent);
     }
+
+    ActivityResultLauncher< Intent > startARLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+
+                        Note note = new Note(data.getStringExtra("note"));
+                        //Add this data to the DB
+                        noteViewModel.insert(note);
+                    }
+
+                }
+            }
+    );
+
 }
