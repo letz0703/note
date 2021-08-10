@@ -15,7 +15,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewNote"
-                android:textColor="#2196F3"
+                android:textColor="#1C72DE"
                 android:textSize="24sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
