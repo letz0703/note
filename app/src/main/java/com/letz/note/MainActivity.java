@@ -23,12 +23,12 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private NoteViewModel noteViewModel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_main);
@@ -47,14 +47,13 @@ public class MainActivity extends AppCompatActivity {
         noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>()
         {
             @Override
-            public void onChanged(List<Note> notes)
-            {
+            public void onChanged(List<Note> notes) {
                 // Update Recycler View
                 adapter.setNotes(notes);
             }
         });
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
         {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -62,25 +61,22 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction)
-            {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 noteViewModel.delete(adapter.getNotes(viewHolder.getAdapterPosition()));
-            }}).attachToRecyclerView(rv);
+            }
+        }).attachToRecyclerView(rv);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
 //        return super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.new_menu,menu);
+        getMenuInflater().inflate(R.menu.new_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.top_menu:
                 gotoAddMemo();
 
@@ -93,13 +89,14 @@ public class MainActivity extends AppCompatActivity {
     private void gotoAddMemo() {
         Intent intent = new Intent(this, AddNoteActivity.class);
 //                startActivityForResult(intent, 1);
-                startARLauncher.launch(intent);
+        startARLauncher.launch(intent);
 //        startActivity(intent);
     }
 
-    ActivityResultLauncher< Intent > startARLauncher = registerForActivityResult(
+    ActivityResultLauncher<Intent> startARLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
+            new ActivityResultCallback<ActivityResult>()
+            {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
