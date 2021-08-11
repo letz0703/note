@@ -5,7 +5,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,11 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.activity_main);
         //리사이클 뷰 정의
         RecyclerView rv = findViewById(R.id.rv);
@@ -65,6 +62,21 @@ public class MainActivity extends AppCompatActivity
                 noteViewModel.delete(adapter.getNotes(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(rv);
+
+        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(Note note) {
+
+                Intent i = new Intent(MainActivity.this, UpdateNoteActivity.class);
+                i.putExtra("description", note.getDescription());
+                i.putExtra("id", note.getId());
+//                Toast.makeText(MainActivity.this, "itemClicked", Toast.LENGTH_SHORT).show();
+//                startActivityForResult(i, 11);
+                UpdateARlauncher.launch(i);
+            }
+
+        });
     }
 
     @Override
@@ -93,6 +105,20 @@ public class MainActivity extends AppCompatActivity
 //        startActivity(intent);
     }
 
+    ActivityResultLauncher<Intent> UpdateARlauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data= result.getData();
+                        // Handle the Intent
+                        Note note = new Note(data.getStringExtra("note"));
+                        noteViewModel.update(note);
+                    }
+                }
+            });
+
     ActivityResultLauncher<Intent> startARLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>()
@@ -109,5 +135,4 @@ public class MainActivity extends AppCompatActivity
                 }
             }
     );
-
 }

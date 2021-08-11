@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -15,37 +14,34 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>
 {
     private List<Note> notes = new ArrayList<>();
+    private OnItemClickListener listener;
 
     @NonNull
     @Override
-    public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+
+    public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.note_item,parent,false);
+                .inflate(R.layout.note_item, parent, false);
         return new NoteHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NoteHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
         Note currentNote = notes.get(position);
         holder.textViewNote.setText(currentNote.getDescription());
     }
 
     @Override
-    public int getItemCount()
-    {
-        return notes .size();
+    public int getItemCount() {
+        return notes.size();
     }
 
-    public void setNotes(List<Note> notes)
-    {
+    public void setNotes(List<Note> notes) {
         this.notes = notes;
         notifyDataSetChanged();
     }
 
-    public Note getNotes(int position)
-    {
+    public Note getNotes(int position) {
         return notes.get(position);
     }
 
@@ -53,10 +49,29 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>
     {
         TextView textViewNote;
 
-        public NoteHolder(@NonNull View itemView)
-        {
+        public NoteHolder(@NonNull View itemView) {
             super(itemView);
             textViewNote = itemView.findViewById(R.id.textViewNote);
+
+            itemView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(notes.get(position));
+                    }
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(Note note);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
